@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 
     //Getting time at start of process
     double ts, te;
-	get_walltime(&ts);
+    get_walltime(&ts);
 
     for (i=0; i<N; i++){
         //everytime the outer for-loop advances by one we need to set the vp pointer to the beginning of the array b, because it reached the last element during the inner for-loop
