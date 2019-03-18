@@ -7,9 +7,9 @@
 void get_walltime(double *wct);
 
 int main(int argc, char *argv[]) {
-	int i, j, k;
-	//The result of the multiplication of arrays a and b will be stored to array c. The array sumArray is used as a temproraty storing point of the multiplication when using the sse
-	float *a, *b, *c ,*sumArray;
+    int i, j, k;
+    //The result of the multiplication of arrays a and b will be stored to array c. The array sumArray is used as a temproraty storing point of the multiplication when using the sse
+    float *a, *b, *c , *pc,*sumArray;
     //The sum will contain temproraty sum of all the elements of the array sumArray
     float sum = 0;
     //128 bit pointers
@@ -45,12 +45,14 @@ int main(int argc, char *argv[]) {
 		a[i] = 2.0;
 		b[i] = 3.0;
 		c[i] = 0.0;
-	}
+    }
 
     //each pointer now points at the beginning of the array they were set to.
     va = (__m128*) a;
     vb = (__m128*) b;
     vsum = (__m128*) sumArray;
+    //pointer pc is set at the beginning of array c
+    pc = c;
 
     //Getting time at start of process
     double ts, te;
@@ -73,8 +75,9 @@ int main(int argc, char *argv[]) {
                 va++;
                 vb++;
             }
-            //then the sum is stored in the array c  
-            c[i] = sum;
+            //then the sum is stored in the array c through the pointer pc
+            *pc = sum;
+            pc++;
             //and the sum variable is set to 0 in order to be used on the next multiplication
             sum = 0;
 
@@ -85,27 +88,27 @@ int main(int argc, char *argv[]) {
     get_walltime(&te);
 	
 
-	//Results
-	float mflops = (unsigned long)N * N * N / ((te - ts) * 1e6);
-	printf("mflops: %f , time: %lf\n", mflops,(te - ts));
+    //Results
+    float mflops = (unsigned long)N * N * N / ((te - ts) * 1e6);
+    printf("mflops: %f , time: %lf\n", mflops,(te - ts));
 	
 
 
-	//Check if everything went as planned
-	for(i=0; i<N; i++) {
-		if(c[i] != a[i] * b[i] * N) {
-			printf("Something went wrong. Check your code \n");
-            break;
-		}
+    //Check if everything went as planned
+    for(i=0; i<N; i++) {
+     	if(c[i] != a[i] * b[i] * N) {
+		printf("Something went wrong. Check your code \n");
+		break;
 	}
+    }
 
-	//Free allocated memory because we are good and responsible programmers :D
-	free(a);
-	free(b);
-	free(c);
+    //Free allocated memory because we are good and responsible programmers :D
+    free(a);
+    free(b);
+    free(c);
     free(sumArray);
 
-	return 0;
+    return 0;
 
 }
 
